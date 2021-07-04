@@ -44,6 +44,13 @@ parser.add_argument(
     help="if set, don't show any output when the current song is paused",
     dest='quiet',
 )
+parser.add_argument(
+    '-c',
+    '--click-functions',
+    action='store_true',
+    help='if set, use mouse clicks to control spotify. left click for previous song, middle click for play/pause song and right click for next song',
+    dest='click'
+)
 
 args = parser.parse_args()
 
@@ -76,6 +83,7 @@ font = args.font
 play_pause_font = args.play_pause_font
 
 quiet = args.quiet
+click = args.click
 
 # parameters can be overwritten by args
 if args.trunclen is not None:
@@ -114,6 +122,11 @@ try:
     if play_pause_font:
         play_pause = label_with_font.format(font=play_pause_font, label=play_pause)
 
+    # Handle click actions
+    if (click):
+        action_beg = '%{A1:dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous:}%{A2:dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause:}%{A3:dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next:}'
+        action_end = '%{A}%{A}%{A}'
+
     # Handle main label
 
     artist = fix_string(metadata['xesam:artist'][0]) if metadata['xesam:artist'] else ''
@@ -129,10 +142,14 @@ try:
             album = label_with_font.format(font=font, label=album)
 
         # Add 4 to trunclen to account for status symbol, spaces, and other padding characters
-        print(truncate(output.format(artist=artist, 
+        o = truncate(output.format(artist=artist, 
                                      song=song, 
                                      play_pause=play_pause, 
-                                     album=album), trunclen + 4))
+                                     album=album), trunclen + 4)
+        if (click):
+            print(action_beg + o + action_end)
+        else:
+            print(o)
 
 except Exception as e:
     if isinstance(e, dbus.exceptions.DBusException):
