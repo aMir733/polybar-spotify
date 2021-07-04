@@ -79,3 +79,13 @@ Override example:
 ```ini
 exec = python /path/to/spotify/script -q
 ```
+
+##### Click actions
+
+The argument "-c" or "--click-action" is optional, this argument adds a click action to the final label. The click action is set to use `dbus-send` to control spotify.
+After setting this option, you can play/pause the song with the middle click and use left and right clicks to play the previous or the next song
+
+Override example:
+```ini
+exec = python /path/to/spotify/script -c
+`

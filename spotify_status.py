@@ -46,7 +46,7 @@ parser.add_argument(
 )
 parser.add_argument(
     '-c',
-    '--click-functions',
+    '--click-action',
     action='store_true',
     help='if set, use mouse clicks to control spotify. left click for previous song, middle click for play/pause song and right click for next song',
     dest='click'
