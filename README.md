@@ -88,4 +88,4 @@ After setting this option, you can play/pause the song with the middle click and
 Override example:
 ```ini
 exec = python /path/to/spotify/script -c
-`
+```
