@@ -133,23 +133,20 @@ try:
     song = fix_string(metadata['xesam:title']) if metadata['xesam:title'] else ''
     album = fix_string(metadata['xesam:album']) if metadata['xesam:album'] else ''
 
-    if (quiet and status == 'Paused') or (not artist and not song and not album):
-        print('')
+    if font:
+        artist = label_with_font.format(font=font, label=artist)
+        song = label_with_font.format(font=font, label=song)
+        album = label_with_font.format(font=font, label=album)
+    
+    # Add 4 to trunclen to account for status symbol, spaces, and other padding characters
+    o = truncate(output.format(artist=artist, 
+                                 song=song, 
+                                 play_pause=play_pause, 
+                                 album=album), trunclen + 4)
+    if (click):
+        print(action_beg + o + action_end)
     else:
-        if font:
-            artist = label_with_font.format(font=font, label=artist)
-            song = label_with_font.format(font=font, label=song)
-            album = label_with_font.format(font=font, label=album)
-
-        # Add 4 to trunclen to account for status symbol, spaces, and other padding characters
-        o = truncate(output.format(artist=artist, 
-                                     song=song, 
-                                     play_pause=play_pause, 
-                                     album=album), trunclen + 4)
-        if (click):
-            print(action_beg + o + action_end)
-        else:
-            print(o)
+        print(o)
 
 except Exception as e:
     if isinstance(e, dbus.exceptions.DBusException):
